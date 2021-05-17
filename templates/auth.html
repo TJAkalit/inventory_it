@@ -1,0 +1,18 @@
+{% extends '_root.html' %}
+{% block body %}
+<div class="auth-block">
+    <form action="/auth/" method="POST" class="auth-form">
+        <div class="auth-form-element">
+            <span>Логин</span><input type="text" name="login">
+        </div>
+        <div class="auth-form-element">
+            <span>Пароль</span><input type="password" name="password">
+        </div>
+        <div class="auth-form-element">
+            <input type="submit" value="Вход">
+        </div>
+    </form>
+</div>
+
+
+{% endblock body %}

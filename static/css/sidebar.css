@@ -1,0 +1,24 @@
+div.sidebar {
+    width: calc(7rem + 7vw);
+    background-color: #3333a3;
+    color: #CCCCCC;
+}
+div.sidebar>div.sidebar-user {
+    text-align: left;   
+    padding-top: calc(0.3rem + 0.2vw);
+}
+
+div.sidebar>div.sidebar-user>p {
+    margin: 0 0 0 0;
+    padding-left: calc(0.3rem + 1vw);
+}
+div.sidebar>div.sidebar-user>p:nth-child(1) {
+    font-size: 1.2rem;
+}
+div.sidebar>div.sidebar-user>p:nth-child(2) {
+    font-size: 1.1rem;
+}
+div.sidebar>div.sidebar-user>p>a {
+    color: #CCC;
+    text-decoration: none;
+}
