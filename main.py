@@ -12,6 +12,8 @@ from staff.Security            import verify_user
 from staff.Security            import make_session
 from staff.Security            import revoke_session
 
+from staff.Permissons          import get_permission_list
+
 from sqlalchemy.orm            import sessionmaker
 
 app = Flask(__name__)
@@ -24,19 +26,20 @@ def logged_in():
         return None
     return verify_session(key)
 
+def about_user(person_id):
+    g.user_permissions = get_permission_list(person_id)
+    g.user = get_person(person_id)
+
 @app.route("/")
 def index():
     g.DBSession = app.config["DBSession"]
     user = logged_in()
     if not user:
         return redirect(url_for("auth"))
-    g.user = get_person(user.person_id)
+    
+    about_user(user.person_id)
     
     return render_template("main.html")
-    return "Hello, {}! from {}<br>Have a nice day!".format(
-        get_person(user.person_id).first_name,
-        app.config["MY_NAME"]
-    )
 
 @app.route("/auth/", methods = ["GET", "POST", ])
 def auth():
@@ -72,7 +75,7 @@ def auth():
     
 @app.route("/auth/logout/")
 def logout():
-    
+    g.DBSession = app.config["DBSession"]
     user = logged_in()
     response = redirect(url_for("auth"))
     

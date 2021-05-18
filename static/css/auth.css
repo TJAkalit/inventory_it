@@ -1,0 +1,46 @@
+div.auth-block {
+    border: 1px solid black;
+    left: 50%;
+    top: 50vh;
+    position: relative;
+    width: 30vw;
+    transform: translate(-50%, -50%);
+    padding: 2rem 2rem 2rem 2rem;
+}
+div.auth-block>form.auth-form>div.auth-form-element{
+    box-sizing: border-box;
+    /* border: 1px solid #DDDDDD; */
+    border-radius: 2rem 2rem 2rem 2rem;
+    width: 28rem;
+    height: 3rem;
+    position: relative;
+    top: 0;
+}
+div.auth-block>form.auth-form>div.auth-form-element>input{
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background: none;
+    left: 2px;
+    
+}
+div.auth-block>form.auth-form>div.auth-form-element>label{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 2px;
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+form.auth-form > div.auth-form-element > input:focus ~ label,
+form.auth-form > div.auth-form-element > input:valid ~ label{
+    font-size: 0.7rem;
+    top: 20%;
+}
+
+
+

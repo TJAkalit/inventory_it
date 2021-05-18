@@ -1,8 +1,6 @@
 from sqlalchemy.orm             import relationship
-from sqlalchemy.sql.elements import ColumnElement
-from sqlalchemy.sql.expression import null
 ## # ## # ## # ## # ## # ## #   ## ## # ## # ## # ## # ##
-from sqlalchemy.sql.schema      import Column
+from sqlalchemy.sql.schema      import Column, Table
 from sqlalchemy.sql.schema      import ForeignKey
 ## # ## # ## # ## # ## # ## #   ## ## # ## # ## # ## # ##
 from sqlalchemy.sql.sqltypes    import Boolean
@@ -22,7 +20,8 @@ class Person(Base):
     last_name      = Column("last_name"   , VARCHAR(64)        ,                     nullable = True , unique = False,                                       )
     middle_name    = Column("middle_name" , VARCHAR(64)        ,                     nullable = False, unique = False,                                       )
     removed        = Column("removed"     , Boolean            ,                     nullable = False, unique = False,                      default = False, )
-    
+    permissions    = relationship("Permission", secondary = "person_permission", back_populates = "persons")
+        
     def __str__(self):
         return "{0.last_name} {0.first_name} {0.middle_name}".format(self)
 ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ###
@@ -69,4 +68,31 @@ class Setting(Base):
     
     def __str__(self):
         return "[{0.key}]=[{0.value_type}][{0.value}]".format(self)
+## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ###
+class Permission(Base):
+    __tablename__  = "permission"
+    __table_args__ = {'schema': 'iit'}
+    id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 )
+    name           = Column("name"        , VARCHAR(64)        ,                     nullable = False, unique = True ,                                       )
+    code           = Column("code"        , VARCHAR(64)        ,                     nullable = False, unique = True ,                                       )
+    
+    persons        = relationship("Person", secondary = "person_permission", back_populates = "permissions")
+    
+    def __str__(self):
+        return str(self.code)
+## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ###
+class Objects(Base):
+    __tablename__  = "objects"
+    __table_args__ = {'schema': 'iit'}
+    id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 )
+    name           = Column("name"        , VARCHAR(64)        ,                     nullable = False, unique = True ,                                       )
+    codename       = Column("codename"    , VARCHAR(64)        ,                     nullable = True , unique = False,                                       )
+    address        = Column("address"     , VARCHAR(64)        ,                     nullable = False, unique = False,                                       )
+    removed        = Column("removed"     , Boolean            ,                     nullable = False, unique = False,                      default = False, )
+## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ###
+person_permission = Table(
+    'person_permission', Base.metadata,
+    Column('person_id', Integer, ForeignKey(Person.id)),
+    Column('permission_id', Integer, ForeignKey(Permission.id)),
+)
 ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ## # ###

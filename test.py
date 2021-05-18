@@ -7,6 +7,13 @@ from staff.Person import create_person
 from staff.Person import remove_person
 from staff.Person import get_person
 from staff.Person import edit_person
+from staff.Permissons import create_permission
+from staff.Permissons import edit_permissions
+from staff.Permissons import get_permissions
+from staff.Permissons import delete_permissions
+from staff.Permissons import add_person_to_permission
+from staff.Permissons import remove_person_from_permission
+from staff.Permissons import get_permission_list
 
 from sqlalchemy.orm import sessionmaker
 
@@ -77,6 +84,79 @@ class Test_PersonManupulate(unittest.TestCase):
             with self.subTest(i = "Removed person"):
                 self.assertIsNone(get_person(p_id))
             
+class Test_Permissions(unittest.TestCase):
+    
+    @classmethod
+    def setUpClass(cls):
+        Base.metadata.create_all(test_engine)
+        with app.app_context():
+            g.DBSession = sessionmaker(bind = test_engine)
+            person = create_person(
+                "Иван",
+                "Иванов",
+                "Иванович", 
+            )
+            cls.person_id = person.id
+
+    @classmethod
+    def tearDownClass(cls):
+        Base.metadata.drop_all(test_engine)
+    
+    def test_CreatePermission(self):
+        with app.app_context():
+            g.DBSession = sessionmaker(bind = test_engine)
+            new_perm = create_permission("codeasd", "nameasdasd")
+            with self.subTest(i = "creation"):
+                self.assertIsNotNone(new_perm)
+            
+            with self.subTest(i = "getting"):
+                perm = get_permissions(new_perm.id)
+                self.assertIsNotNone(perm)
+                self.assertEqual(get_permissions(new_perm.id).id, new_perm.id)
+    
+    def test_EditPermission(self):
+    
+        with app.app_context():
+    
+            g.DBSession = sessionmaker(bind = test_engine)
+            new_perm = create_permission("test_permissions", "Тестирование привилегий")
+    
+            with self.subTest(i = "creation"):
+                self.assertIsNotNone(new_perm)
+            
+            with self.subTest(i = "getting"):
+                perm = get_permissions(new_perm.id)
+                self.assertIsNotNone(perm)
+                self.assertEqual(get_permissions(new_perm.id).id, new_perm.id)
+                
+            with self.subTest(i = "editing"):
+                perm = edit_permissions(new_perm.id, "Тестирование номер два")
+                self.assertTrue(perm)
+                self.assertEqual(get_permissions(new_perm.id).name, "Тестирование номер два")
+            
+    def test_DeletePermissions(self):
+        
+        with app.app_context():
+            g.DBSession = sessionmaker(bind = test_engine)
+            new_perm = create_permission("test2_permissions", "Тестовая привилегия")
+    
+            with self.subTest(i = "creation"):
+                self.assertIsNotNone(new_perm)
+            
+            with self.subTest(i = "getting"):
+                perm = get_permissions(new_perm.id)
+                self.assertIsNotNone(perm)
+                self.assertEqual(get_permissions(new_perm.id).id, new_perm.id)
+            
+            with self.subTest(i = "deleting with person"):
+                self.assertFalse(add_person_to_permission(self.__class__.person_id, perm.id))
+                
+            with self.subTest(i = "Person permissions before"):
+                self.assertEqual(type(get_permission_list(self.__class__.person_id)), list)
+                
+            with self.subTest(i = "deleting without person"):
+                remove_person_from_permission(self.__class__.person_id, perm.id)
+                self.assertTrue(delete_permissions(new_perm.id))
 
 if __name__ == "__main__":
     

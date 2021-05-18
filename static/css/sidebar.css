@@ -1,6 +1,7 @@
 div.sidebar {
     width: calc(7rem + 7vw);
-    background-color: #3333a3;
+    background: rgb(63,31,98);
+    background: linear-gradient(90deg, rgba(63,31,98,1) 0%, rgba(9,9,121,1) 75%, rgba(255,255,255,1) 100%);
     color: #CCCCCC;
 }
 div.sidebar>div.sidebar-user {
@@ -21,4 +22,17 @@ div.sidebar>div.sidebar-user>p:nth-child(2) {
 div.sidebar>div.sidebar-user>p>a {
     color: #CCC;
     text-decoration: none;
+}
+div.sidebar > div.sidebar-list > ul{
+    list-style: none;
+    padding-left: calc(0.3rem + 1vw);
+}
+div.sidebar > div.sidebar-list > ul > li:hover > a {
+    color: #FFF;
+}
+
+div.sidebar > div.sidebar-list > ul > li > a {
+    text-decoration: none;
+    color: #CCC;
+    transition: 0.5s ease;
 }
