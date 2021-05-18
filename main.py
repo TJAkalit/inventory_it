@@ -84,7 +84,17 @@ def logout():
     response.set_cookie("hash_key", "", 0)
     
     return response
+
+@app.route("/directory/")
+def directory():
+    g.DBSession = app.config["DBSession"]
+    user = logged_in()
+    if not user:
+        return redirect(url_for("auth"))
     
+    about_user(user.person_id)
+    
+    return render_template("directory_root.html")
     
 if __name__ == "__main__":
     

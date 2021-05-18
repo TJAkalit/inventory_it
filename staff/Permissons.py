@@ -189,7 +189,7 @@ def remove_person_from_permission(person_id, permission_id):
             person = session.query(Person).filter_by(id = person_id).one()
             permission = session.query(Permission).filter_by(id = permission_id).one()
             
-            person.permissions.delete(permission)
+            person.permissions.remove(permission)
             session.commit()
             return True
         

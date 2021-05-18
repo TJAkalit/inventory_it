@@ -1,4 +1,5 @@
 div.sidebar {
+    flex: 0 1 auto;
     width: calc(7rem + 7vw);
     background: rgb(63,31,98);
     background: linear-gradient(90deg, rgba(63,31,98,1) 0%, rgba(9,9,121,1) 75%, rgba(255,255,255,1) 100%);

@@ -149,7 +149,8 @@ class Test_Permissions(unittest.TestCase):
                 self.assertEqual(get_permissions(new_perm.id).id, new_perm.id)
             
             with self.subTest(i = "deleting with person"):
-                self.assertFalse(add_person_to_permission(self.__class__.person_id, perm.id))
+                add_person_to_permission(self.__class__.person_id, perm.id)
+                self.assertFalse(delete_permissions(perm.id))
                 
             with self.subTest(i = "Person permissions before"):
                 self.assertEqual(type(get_permission_list(self.__class__.person_id)), list)

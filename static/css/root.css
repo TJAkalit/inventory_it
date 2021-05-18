@@ -1,0 +1,9 @@
+body {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+div.workwindow{
+    flex: 0 1 auto;
+}
