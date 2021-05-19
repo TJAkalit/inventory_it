@@ -1,5 +1,16 @@
 {% extends 'main.html' %}
 
 {% block workwindow %}
-<div class="workwindow">Написал что-то приличное. Про пидоров. (Осуждаю)</div>
+<div class="workwindow">
+    <div class="workwindow-header">
+        <p>Справочники</p>
+    </div>
+    <hr>
+    <div class="workwindow-body">
+        <ul class="directory-list">
+            <li><a href="#">Права доступа</a></li>
+            <li><a href="{{ url_for('directory_concrete', category = 'person') }}">Пользователи</a></li>
+        </ul>
+    </div>
+</div>
 {% endblock workwindow %}

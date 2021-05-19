@@ -7,6 +7,8 @@
     <hr>
     <div class="sidebar-list">
         <ul>
+            <li><a href="{{ url_for('directory') }}">Справочники</a></li>
+            <hr>
             {% if 'permissions_r' in g.user_permissions or 'permissions_rw' in g.user_permissions%}
             <li><a href="#">Права доступа</a></li>
             {% endif %}

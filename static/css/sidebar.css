@@ -1,37 +1,44 @@
 div.sidebar {
     flex: 0 1 auto;
     width: calc(7rem + 7vw);
-    background: rgb(63,31,98);
-    background: linear-gradient(90deg, rgba(63,31,98,1) 0%, rgba(9,9,121,1) 75%, rgba(255,255,255,1) 100%);
+    background: rgba(59,59,121,1);
+    /* background: linear-gradient(90deg, rgba(63,31,98,1) 0%, rgba(9,9,121,1) 75%, rgba(255,255,255,1) 100%); */
     color: #CCCCCC;
+    border-radius: 0rem 2rem 2rem 0rem;
 }
-div.sidebar>div.sidebar-user {
+div.sidebar > div.sidebar-user {
     text-align: left;   
     padding-top: calc(0.3rem + 0.2vw);
 }
 
-div.sidebar>div.sidebar-user>p {
+div.sidebar > div.sidebar-user > p {
     margin: 0 0 0 0;
     padding-left: calc(0.3rem + 1vw);
 }
-div.sidebar>div.sidebar-user>p:nth-child(1) {
+div.sidebar > div.sidebar-user >p:nth-child(1) {
     font-size: 1.2rem;
 }
-div.sidebar>div.sidebar-user>p:nth-child(2) {
+div.sidebar > div.sidebar-user > p:nth-child(2) {
     font-size: 1.1rem;
 }
-div.sidebar>div.sidebar-user>p>a {
+div.sidebar > div.sidebar-user > p > a {
     color: #CCC;
     text-decoration: none;
+    transition: 0.5s ease;
 }
-div.sidebar > div.sidebar-list > ul{
+div.sidebar> div.sidebar-user> p > a:hover {
+    color: rgb(255, 89, 89);
+}
+div.sidebar > div.sidebar-list > ul {
     list-style: none;
     padding-left: calc(0.3rem + 1vw);
 }
 div.sidebar > div.sidebar-list > ul > li:hover > a {
     color: #FFF;
 }
-
+div.sidebar > div.sidebar-list > ul > li:nth-child(1){
+    font-size: 1.2rem;
+}
 div.sidebar > div.sidebar-list > ul > li > a {
     text-decoration: none;
     color: #CCC;

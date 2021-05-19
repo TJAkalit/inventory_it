@@ -10,7 +10,7 @@ if __name__ == "__main__":
         
         g.DBSession = app.config["DBSession"]
         
-        new_person = create_person("Иван", "Антипов", "Олегович")
+        new_person = create_person("Антипов", "Иван", "Олегович")
         
         create_user("tjakalit", "123@QAZwsx", new_person.id)
         

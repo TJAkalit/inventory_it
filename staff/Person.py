@@ -6,9 +6,9 @@ from flask.globals import session
 from staff.Models  import Person
 
 logger = logging.getLogger("Person_backend")
-logger.setLevel(100)
+logger.setLevel(0)
 
-def create_person(first_name, last_name, middle_name, ):
+def create_person(last_name, first_name, middle_name, ):
     
     for item in [first_name, last_name, middle_name]:
         
@@ -104,7 +104,7 @@ def remove_person(id):
             return False
         else:
             logger.info(("[remove_person] [Success!] [{id}][{person}] marked as removed!").format(
-                             id = person.id, person = person, 
+                             id = person.id, person = person,  
                          ))
             return True
             
@@ -127,4 +127,19 @@ def get_person(id):
             
         else:
             return person
+        
+def get_all_persons(removed = False):
+    
+    with g.DBSession() as session:
+        
+        try:
+            result = session.query(Person).filter_by(removed = removed, ).order_by(Person.id).all()
+            return result
+        
+        except Exception as ex:
+            logger.error(("[get_all_persons] [Exception] [{ex.__class__.__qualname__}]" + 
+                         " [removed]=[{removed}] [{ex}]").format(
+                             removed = removed, ex = ex,
+                         ))
+            return None
             

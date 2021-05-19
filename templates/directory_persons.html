@@ -1,0 +1,67 @@
+{% extends 'main.html' %}
+
+{% block workwindow %}
+<div class="workwindow">
+    <div class="workwindow-header">
+        <p>{{ g.recomended["name"] }}</p>
+    </div>
+    <hr>
+    <div class="workwindow-body">
+        <table>
+            <thead>
+                <td>ИД</td>
+                {% for column in g.recomended["fields"] %}
+                <td>{{ column["name"]}}</td>
+                {% endfor %}
+            </thead>
+            <tbody>
+                <form id="element-list">
+
+                    <tr>
+                        <td colspan="{{ g.recomended['fields'].__len__() + 1 }}">
+                        <hr>
+                    </td>
+                </tr>
+                {% for item in g.data %}
+                <tr>
+                    <td>{{ g.getattr(item, "id", "") }}</td>
+                    {% for field in g.recomended["fields"] %}
+                    <td>{{ g.getattr(item, field["code"], "") }}</td>
+                    {% endfor %}
+                    <td><input type="radio" name="element" value="{{ g.getattr(item, 'id', '') }}"></td>
+                </tr>
+                {% endfor %}
+                </form>
+            </tbody>
+        </table>
+        <div class="toolbar">
+            {% if g.toolbar %}
+            <p><button form="element-list" formmethod="GET "formaction="./" name="create">Создать</button></p>
+            <p><button form="element-list" formmethod="GET" formaction="./">Редактировать</button></p>
+            {% endif %}
+            {% if g.create_window %}
+            <a href="./">Назад</a>
+            <p>Создание нового элемента</p>
+            <hr>
+            <form id="create-window" method="{% if g.edit_window %}patch{% endif %}">
+                <table>
+                    {% for field in g.recomended["fields"] %}
+                    <tr>
+                        <td>{{ field["name"] }}</td>
+                        <td>
+                            <input type="text" name="{{ field['code'] }}"{% if g.edit_window %} value="{{ g.getattr(g.element, field['code']) }}"{% endif %}>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% if g.edit_window %}
+                <button form="create-window" formaction="/directory/{{ g.category }}/{{ g.element.id }}/">Сохранить</button>
+                {% else %}
+                <button form="create-window" formmethod="POST" formaction="/directory/{{ g.category }}/">Сохранить</button>
+                {% endif %}
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock workwindow %}
