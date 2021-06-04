@@ -9,26 +9,21 @@
     <div class="workwindow-body">
         <table>
             <thead>
-                <td>ИД</td>
-                {% for column in g.recomended["fields"] %}
-                <td>{{ column["name"]}}</td>
+                {% for item in g.table_fields %}
+                <td>{{ g.naming[item] }}</td>
                 {% endfor %}
             </thead>
             <tbody>
-                <form id="element-list">
-
-                    <tr>
-                        <td colspan="{{ g.recomended['fields'].__len__() + 1 }}">
-                        <hr>
-                    </td>
-                </tr>
-                {% for item in g.data %}
+                <form id="create-window">
                 <tr>
-                    <td>{{ g.getattr(item, "id", "") }}</td>
-                    {% for field in g.recomended["fields"] %}
-                    <td>{{ g.getattr(item, field["code"], "") }}</td>
+                    <td colspan="{{ g.table_fields.__len__() + 1 }}"><hr></td>
+                </tr>
+                {% for obj in g.data %}
+                <tr>
+                    {% for field in g.table_fields %}
+                    <td>{{ g.getattr(obj, field, None) }}</td>
                     {% endfor %}
-                    <td><input type="radio" name="element" value="{{ g.getattr(item, 'id', '') }}"></td>
+                    <td><input type="radio" name="item" value="{{ g.getattr(obj, 'id', 1) }}"></td>
                 </tr>
                 {% endfor %}
                 </form>
@@ -60,6 +55,15 @@
                 <button form="create-window" formmethod="POST" formaction="/directory/{{ g.category }}/">Сохранить</button>
                 {% endif %}
             </form>
+            {% endif %}
+            {% if g.viewbar %}
+            <table>
+                {% for field in g.fields %}
+                <tr>
+                    <td style="border: 1px solid rgba(59,59,121,1);" >{{ g.naming[field] }}</td><td style="border: 1px solid rgba(59,59,121,1);">{{ g.getattr(g.element, field, "") }}</td>
+                </tr>
+                {% endfor %}
+            </table>
             {% endif %}
         </div>
     </div>

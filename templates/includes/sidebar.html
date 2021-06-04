@@ -10,10 +10,10 @@
             <li><a href="{{ url_for('directory') }}">Справочники</a></li>
             <hr>
             {% if 'permissions_r' in g.user_permissions or 'permissions_rw' in g.user_permissions%}
-            <li><a href="#">Права доступа</a></li>
+            <li><a href="{{ url_for('directory_concrete', category='permission') }}">Права доступа</a></li>
             {% endif %}
             {% if 'users_r' in g.user_permissions or 'users_rw' in g.user_permissions%}
-            <li><a href="#">Пользователи</a></li>
+            <li><a href="{{ url_for('directory_concrete', category='person') }}">Пользователи</a></li>
             {% endif %}
         </ul>
     </div>

@@ -47,7 +47,8 @@ div.workwindow-body > div.toolbar{
     margin-left: calc(0.5rem + 2%);
     margin-right: calc(1rem + 5%);
     background: rgb(100,100,100);
-    background: linear-gradient(180deg, rgba(100,100,100,1) 0%, rgba(121,121,121,1) 65%, rgba(59,59,121,1) 75%);
+    color: rgb(0,0,0);
+    background: linear-gradient(180deg, rgba(200,200,200,1) 0%, rgba(121,121,121,1) 65%, rgba(59,59,121,1) 75%);
 
     min-height: 80vh;
 

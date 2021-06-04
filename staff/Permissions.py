@@ -46,7 +46,7 @@ def create_permission(code, name):
                          ))
             return None
         
-def get_permissions(id):
+def get_permission(id):
     
     if type(id) != int:
         return None
@@ -68,9 +68,8 @@ def get_permissions(id):
                              id = id, ex = ex,
                          ))
             return None
-        
-        
-def edit_permissions(id, name):
+         
+def edit_permission(id, name):
     
     if type(id) != int:
         return False
@@ -228,6 +227,23 @@ def get_permission_list(person_id):
                          " [person_id]=[{person_id}]" +
                          " [{ex}]").format(
                              person_id = person_id,
+                             ex = ex,
+                         ))
+            return None
+        
+def get_all_permission():
+    
+    with g.DBSession() as session:
+        
+        try:
+            
+            permissions = session.query(Permission).filter_by().all()
+            return permissions
+        
+        except Exception as ex:
+            logger.error(("[get_all_permission] [Exception] [{ex.__class__.__qualname__}]" + 
+                         " [removed]=[{removed}]" +
+                         " [{ex}]").format(
                              ex = ex,
                          ))
             return None

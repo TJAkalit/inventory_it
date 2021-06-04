@@ -15,11 +15,11 @@ Base = declarative_base()
 class Person(Base):
     __tablename__  = "person"
     __table_args__ = {"schema": "iit"}
-    id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 )
-    first_name     = Column("first_name"  , VARCHAR(64)        ,                     nullable = False, unique = False,                                       )
-    last_name      = Column("last_name"   , VARCHAR(64)        ,                     nullable = True , unique = False,                                       )
-    middle_name    = Column("middle_name" , VARCHAR(64)        ,                     nullable = False, unique = False,                                       )
-    removed        = Column("removed"     , Boolean            ,                     nullable = False, unique = False,                      default = False, )
+    id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 comment = "ИД" , )
+    first_name     = Column("first_name"  , VARCHAR(64)        ,                     nullable = False, unique = False,                                       comment = "Имя",)
+    last_name      = Column("last_name"   , VARCHAR(64)        ,                     nullable = True , unique = False,                                       comment = "Фамилия",)
+    middle_name    = Column("middle_name" , VARCHAR(64)        ,                     nullable = False, unique = False,                                       comment = "Отчество",)
+    removed        = Column("removed"     , Boolean            ,                     nullable = False, unique = False,                      default = False, comment = "Удалён",)
     permissions    = relationship("Permission", secondary = "person_permission", back_populates = "persons")
         
     def __str__(self):
@@ -29,12 +29,12 @@ class User(Base):
     
     __tablename__  = "user"
     __table_args__ = {'schema': 'iit'}
-    id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 )
-    login          = Column("login"       , VARCHAR(64)        ,                     nullable = False, unique = True ,                                       )
-    pass_hash      = Column("pass_hash"   , VARCHAR(64)        ,                     nullable = False, unique = False,                                       )
-    create_date    = Column("create_date" , DateTime           ,                     nullable = False, unique = False,                                       )
-    update_date    = Column("update_date" , DateTime           ,                     nullable = True , unique = False,                                       )
-    removed        = Column("removed"     , Boolean            ,                     nullable = False, unique = False,                      default = False, )
+    id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 comment = "ИД")
+    login          = Column("login"       , VARCHAR(64)        ,                     nullable = False, unique = True ,                                       comment = "Логин")
+    pass_hash      = Column("pass_hash"   , VARCHAR(64)        ,                     nullable = False, unique = False,                                       comment = "Хэш пароля")
+    create_date    = Column("create_date" , DateTime           ,                     nullable = False, unique = False,                                       comment = "Дата создания")
+    update_date    = Column("update_date" , DateTime           ,                     nullable = True , unique = False,                                       comment = "Дата обновления")
+    removed        = Column("removed"     , Boolean            ,                     nullable = False, unique = False,                      default = False, comment = "Удалён")
     person_id      = Column("person_id"   , ForeignKey(Person.id),                   nullable = False, unique = True ,                                       )
     person         = relationship("Person", backref = "user")
     
@@ -48,7 +48,7 @@ class Session(Base):
     __tablename__  = "session"
     __table_args__ = {'schema': 'iit'}
     id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 )
-    session_hash   = Column("session_hash", VARCHAR(64)        ,                     nullable = False, unique = True ,                                       )
+    session_hash   = Column("session_hash", VARCHAR(64)        ,                     nullable = False, unique = True ,                                       comment = "Хэш сессии")
     user_id        = Column("user_id"     , ForeignKey(User.id),                     nullable = False, unique = False,                                       )
     user           = relationship(User    , backref = "session",                                                                                             )
     
@@ -72,9 +72,9 @@ class Setting(Base):
 class Permission(Base):
     __tablename__  = "permission"
     __table_args__ = {'schema': 'iit'}
-    id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 )
-    name           = Column("name"        , VARCHAR(64)        ,                     nullable = False, unique = True ,                                       )
-    code           = Column("code"        , VARCHAR(64)        ,                     nullable = False, unique = True ,                                       )
+    id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 comment = "ИД")
+    name           = Column("name"        , VARCHAR(64)        ,                     nullable = False, unique = True ,                                       comment = "Название")
+    code           = Column("code"        , VARCHAR(64)        ,                     nullable = False, unique = True ,                                       comment = "Код")
     
     persons        = relationship("Person", secondary = "person_permission", back_populates = "permissions")
     

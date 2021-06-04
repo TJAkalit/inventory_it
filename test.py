@@ -1,19 +1,19 @@
 import unittest
 from main import app
 
-from staff.Models import Base
+from staff.Models import Base, Person
 from staff.Engine import test_engine
 from staff.Person import create_person
 from staff.Person import remove_person
 from staff.Person import get_person
 from staff.Person import edit_person
-from staff.Permissons import create_permission
-from staff.Permissons import edit_permissions
-from staff.Permissons import get_permissions
-from staff.Permissons import delete_permissions
-from staff.Permissons import add_person_to_permission
-from staff.Permissons import remove_person_from_permission
-from staff.Permissons import get_permission_list
+from staff.Permissions import create_permission
+from staff.Permissions import edit_permission
+from staff.Permissions import get_permission
+from staff.Permissions import delete_permissions
+from staff.Permissions import add_person_to_permission
+from staff.Permissions import remove_person_from_permission
+from staff.Permissions import get_permission_list
 
 from sqlalchemy.orm import sessionmaker
 
@@ -110,9 +110,9 @@ class Test_Permissions(unittest.TestCase):
                 self.assertIsNotNone(new_perm)
             
             with self.subTest(i = "getting"):
-                perm = get_permissions(new_perm.id)
+                perm = get_permission(new_perm.id)
                 self.assertIsNotNone(perm)
-                self.assertEqual(get_permissions(new_perm.id).id, new_perm.id)
+                self.assertEqual(get_permission(new_perm.id).id, new_perm.id)
     
     def test_EditPermission(self):
     
@@ -125,14 +125,14 @@ class Test_Permissions(unittest.TestCase):
                 self.assertIsNotNone(new_perm)
             
             with self.subTest(i = "getting"):
-                perm = get_permissions(new_perm.id)
+                perm = get_permission(new_perm.id)
                 self.assertIsNotNone(perm)
-                self.assertEqual(get_permissions(new_perm.id).id, new_perm.id)
+                self.assertEqual(get_permission(new_perm.id).id, new_perm.id)
                 
             with self.subTest(i = "editing"):
-                perm = edit_permissions(new_perm.id, "Тестирование номер два")
+                perm = edit_permission(new_perm.id, "Тестирование номер два")
                 self.assertTrue(perm)
-                self.assertEqual(get_permissions(new_perm.id).name, "Тестирование номер два")
+                self.assertEqual(get_permission(new_perm.id).name, "Тестирование номер два")
             
     def test_DeletePermissions(self):
         
@@ -144,9 +144,9 @@ class Test_Permissions(unittest.TestCase):
                 self.assertIsNotNone(new_perm)
             
             with self.subTest(i = "getting"):
-                perm = get_permissions(new_perm.id)
+                perm = get_permission(new_perm.id)
                 self.assertIsNotNone(perm)
-                self.assertEqual(get_permissions(new_perm.id).id, new_perm.id)
+                self.assertEqual(get_permission(new_perm.id).id, new_perm.id)
             
             with self.subTest(i = "deleting with person"):
                 add_person_to_permission(self.__class__.person_id, perm.id)
