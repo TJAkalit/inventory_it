@@ -12,3 +12,11 @@ services:
       - ./init_test_db.sql:/docker-entrypoint-initdb.d/init_test_db.sql
     ports:
     - 5432:5432
+  admin:
+    image: dpage/pgadmin4
+    restart: always
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: antipov_i@hotmail.com
+      PGADMIN_DEFAULT_PASSWORD: 123@QAZwsx
+    ports:
+        - 8002:80

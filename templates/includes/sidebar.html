@@ -13,7 +13,7 @@
             <li><a href="{{ url_for('directory_concrete', category='permission') }}">Права доступа</a></li>
             {% endif %}
             {% if 'users_r' in g.user_permissions or 'users_rw' in g.user_permissions%}
-            <li><a href="{{ url_for('directory_concrete', category='person') }}">Пользователи</a></li>
+            <li><a href="{{ url_for('directory_concrete', category='person') }}">Сотрудники</a></li>
             {% endif %}
         </ul>
     </div>

@@ -1,8 +1,8 @@
 from main                    import app
 from staff.Security          import create_user
 from staff.Person            import create_person
-from staff.Permissons        import create_permission
-from staff.Permissons        import add_person_to_permission
+from staff.Permissions        import create_permission
+from staff.Permissions        import add_person_to_permission
 from flask                   import g
 
 permissions = {

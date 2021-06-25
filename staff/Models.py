@@ -16,8 +16,8 @@ class Person(Base):
     __tablename__  = "person"
     __table_args__ = {"schema": "iit"}
     id             = Column("id"          , Integer            , primary_key = True, nullable = False, unique = True , autoincrement = True,                 comment = "ИД" , )
-    first_name     = Column("first_name"  , VARCHAR(64)        ,                     nullable = False, unique = False,                                       comment = "Имя",)
     last_name      = Column("last_name"   , VARCHAR(64)        ,                     nullable = True , unique = False,                                       comment = "Фамилия",)
+    first_name     = Column("first_name"  , VARCHAR(64)        ,                     nullable = False, unique = False,                                       comment = "Имя",)
     middle_name    = Column("middle_name" , VARCHAR(64)        ,                     nullable = False, unique = False,                                       comment = "Отчество",)
     removed        = Column("removed"     , Boolean            ,                     nullable = False, unique = False,                      default = False, comment = "Удалён",)
     permissions    = relationship("Permission", secondary = "person_permission", back_populates = "persons")

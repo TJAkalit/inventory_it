@@ -4,6 +4,7 @@ from flask                     import g
 from flask                     import redirect
 from flask                     import url_for
 from flask                     import render_template
+from flask.helpers import make_response
 
 from staff.Engine              import engine
 from staff.Security            import create_user, verify_session
@@ -23,8 +24,8 @@ from staff.Person              import get_all_persons
 from sqlalchemy.orm            import sessionmaker
 
 
-from staff.Views               import Person_View
-from staff.Views               import Permission_View
+from staff.Views               import Permission_View, Person_View
+# from staff.Views               import Permission_View
 
 
 app = Flask(__name__)
@@ -170,21 +171,113 @@ def directory_concrete(category = None):
             
     if request.method == "GET":
         if category in mapping:
+
             view = mapping[category]()
-            g.data = view.get_all()
             g.category = category
-            g.recomended = recomended[category]
-            g.table_fields = view.table_fields()
-            g.naming = view.comments()
-            g.getattr = getattr
+            g.directory_name = view.naming
             
+            g.all_fields = view.all_fields
+            g.all_fields_types = view.all_fields_types
+            g.all_fields_comments = view.all_fields_comments
+
+            g.table_fields = view.table_fields()
+
+            g.data = view.get_all()
+            g.getattr = getattr
+
             g.toolbar = True
             
             return render_template("directory_persons.html")
         
         return render_template("directory_root.html") 
 
-@app.route("/directory/<string:category>/<int:ident>", methods = ["GET"])
+@app.route("/directory/<string:category>/create.html", methods = ["GET", "POST"], )
+def directory_create(category = None,):
+
+    g.DBSession = app.config["DBSession"]
+    user = logged_in()
+    if not user:
+        return redirect(url_for("auth"))
+    
+    about_user(user.person_id)
+    
+    mapping = {
+        "person": Person_View,
+        "permission": Permission_View,
+    }
+            
+    if request.method == "GET":
+        if category in mapping:
+            view = mapping[category]()
+
+            g.category = category
+            g.directory_name = view.naming
+            
+            g.all_fields = view.all_fields
+            g.all_fields_types = view.all_fields_types
+            g.all_fields_comments = view.all_fields_comments
+
+            g.table_fields = view.table_fields()
+            
+            g.data = view.get_all()
+            g.getattr = getattr
+
+            g.edit_fields = view.edit_fields()
+            g.required_fields = view.required_fields()
+
+            g.toolbar = False
+            g.createbar = True
+            
+            return render_template("directory_persons.html")
+        
+        return render_template("directory_root.html") 
+
+    if request.method == "POST":
+        if category in mapping:
+
+            view = mapping[category]()
+
+            income_keys = {x for x in request.form.keys()}
+            req_fields = view.required_fields()
+
+
+            if not req_fields.issubset(income_keys):
+
+                return "Not enough required keys!"
+                
+            if income_keys.difference(view.edit_fields()).__len__() != 0:
+                return "Can't accept fields that not in object model!"
+            
+            empty_fields = set()
+
+            for field in req_fields:
+                if not request.form.get(field):
+                    empty_fields.add(field)
+
+            if empty_fields.__len__() != 0:
+                awnser = "Поля {"
+                for field in empty_fields:
+                    awnser += view.all_fields_comments[field]
+                awnser += "} "
+                awnser += "не могут быть пустыми."
+
+
+
+            info = dict()
+            for key in income_keys:
+                info[key] = request.form.get(key)
+
+            new_element = view.create_one(info)
+            if not new_element:
+                return "Can't create element on server side!"
+
+            return make_response(redirect(url_for("directory_edit", category = category, ident = new_element.id)))
+
+        else:
+            return make_response("Wrong!", 500)
+
+
+@app.route("/directory/<string:category>/<int:ident>.html", methods = ["GET", "POST", ])
 def directory_edit(category = None, ident = None):
     
     g.DBSession = app.config["DBSession"]
@@ -204,20 +297,71 @@ def directory_edit(category = None, ident = None):
         if request.method == "GET":
             
             view = mapping[category]()
-            g.data = view.get_all()
             g.category = category
-            g.recomended = recomended[category]
-            g.table_fields = view.table_fields()
-            g.naming = view.comments()
-            g.getattr = getattr
+            g.directory_name = view.naming
             
-            g.fields = view.concrete_fields()
-            print(g.fields)
+            g.all_fields = view.all_fields
+            g.all_fields_types = view.all_fields_types
+            g.all_fields_comments = view.all_fields_comments
+
+            g.table_fields = view.table_fields()
+
+            g.data = view.get_all()
+            g.getattr = getattr
+
+            g.view_fields = view.view_fields()
+            g.auto_fields = view.auto_fields
+            g.required_fields = view.required_fields()
+            
             g.element = view.get_one(ident)
+
+            g.toolbar = False
             
             g.viewbar = True
             
             return render_template("directory_persons.html")
+        
+        if request.method == "POST":
+
+            view = mapping[category]()
+            
+            
+            income_fields = set(field for field in request.form.keys())
+            if not set(view.edit_fields()).issubset(income_fields):
+
+                return "Not enough required keys!"
+
+            if income_fields.difference(view.edit_fields()).__len__() != 0:
+                return "Can't accept fields that not in object model!"
+            
+            empty_fields = set()
+            for field in view.required_fields():
+                if not request.form.get(field):
+                    empty_fields.add(field)
+
+            if empty_fields.__len__() != 0:
+                awnser = "Поля {"
+                for field in empty_fields:
+                    awnser += view.all_fields_comments[field]
+                awnser += "} "
+                awnser += "не могут быть пустыми."
+
+            info = dict()
+            for key in income_fields:
+                info[key] = request.form.get(key)
+            info["id"] = ident
+
+            edited_elem = view.edit_one(info)
+            print(edited_elem)
+
+            if not edited_elem:
+                return "Server side failure"
+
+            return make_response(redirect(url_for("directory_edit", category = category, ident = ident)))
+
+
+
+
             
         
     return "Я хз"

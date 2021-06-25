@@ -8,8 +8,12 @@ from staff.Models  import Person
 logger = logging.getLogger("Person_backend")
 logger.setLevel(0)
 
-def create_person(last_name, first_name, middle_name, ):
+def create_person(info):
     
+    last_name = info["last_name"]
+    first_name = info["first_name"]
+    middle_name = info["middle_name"]
+
     for item in [first_name, last_name, middle_name]:
         
         if not item:
@@ -40,43 +44,37 @@ def create_person(last_name, first_name, middle_name, ):
                          " [last_name]=[{last_name}]" + 
                          " [middle_name]=[{middle_name}]" + 
                          " [{ex}]").format(
+                             ex = ex,
                              first_name = first_name,
                              last_name = last_name,
                              middle_name = middle_name,
                          ))
             return None
         
-def edit_person(id, **kwargs):
-    
-    if type(id) is not int:
-        return False
-    
-    for name in kwargs:
+def edit_person(info):
+    print(info.keys())
+    for name in info.keys():
 
-        if name not in ["first_name", "last_name", "middle_name", ]:
+        if name not in ["first_name", "last_name", "middle_name", "id"]:
             return False
     
-    for name in kwargs:
-        if not kwargs[name]:
-            return False
-        if type(kwargs[name]) is not str:
-            return False   
-        if kwargs[name].__len__() < 2 :
-            return False           
-    
+    id, first_name, last_name, middle_name = info["id"], info["first_name"], info["last_name"], info["middle_name"]
+
     with g.DBSession() as session:
         
         try:
             person = session.query(Person).filter_by(id = id, removed = False).one()
-            for name in kwargs:
-                setattr(person, name, kwargs[name])
+            person.first_name = first_name
+            person.last_name = last_name
+            person.middle_name = middle_name
             session.commit()
         
         except Exception as ex:
+            print(1)
             
             logger.error(("[edit_person] [Exception] [{ex.__class__.__qualname__}]" + 
                          " [id]=[{id}] [data]=[{data}] [{ex}]").format(
-                             data = kwargs, id = id, ex = ex,
+                             data = info, id = id, ex = ex,
                          ))
             return False
 

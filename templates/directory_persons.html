@@ -3,66 +3,112 @@
 {% block workwindow %}
 <div class="workwindow">
     <div class="workwindow-header">
-        <p>{{ g.recomended["name"] }}</p>
+        <p>{{ g.directory_name }}</p>
     </div>
     <hr>
     <div class="workwindow-body">
-        <table>
+        <table class="elements-table">
             <thead>
                 {% for item in g.table_fields %}
-                <td>{{ g.naming[item] }}</td>
+                <td>{{ g.all_fields_comments[item] }}</td>
                 {% endfor %}
             </thead>
             <tbody>
-                <form id="create-window">
-                <tr>
-                    <td colspan="{{ g.table_fields.__len__() + 1 }}"><hr></td>
-                </tr>
-                {% for obj in g.data %}
-                <tr>
-                    {% for field in g.table_fields %}
-                    <td>{{ g.getattr(obj, field, None) }}</td>
+                <form id="element-list">
+                    <tr>
+                        <td colspan="{{ g.table_fields.__len__() + 1 }}"><hr></td>
+                    </tr>
+                    {% for obj in g.data %}
+                    <tr class="elements-table-element" data-id="{{ g.getattr(obj, 'id', 1) }}">
+                        {% for field in g.table_fields %}
+                        <td>{{ g.getattr(obj, field, None) }}</td>
+                        {% endfor %}
+                    </tr>
                     {% endfor %}
-                    <td><input type="radio" name="item" value="{{ g.getattr(obj, 'id', 1) }}"></td>
-                </tr>
-                {% endfor %}
                 </form>
             </tbody>
+            <script>
+            // Переход к конкретному элементу по клику на строке таблицы
+            document.querySelectorAll("table.elements-table > tbody > tr.elements-table-element").forEach(
+                (elem) => {
+                    let link = elem.dataset["id"] + ".html";
+                    elem.onclick = (elem)=> {
+                        document.location = link;
+                    }
+                    
+                }
+            )
+            </script>
         </table>
         <div class="toolbar">
             {% if g.toolbar %}
-            <p><button form="element-list" formmethod="GET "formaction="./" name="create">Создать</button></p>
-            <p><button form="element-list" formmethod="GET" formaction="./">Редактировать</button></p>
-            {% endif %}
-            {% if g.create_window %}
-            <a href="./">Назад</a>
-            <p>Создание нового элемента</p>
-            <hr>
-            <form id="create-window" method="{% if g.edit_window %}patch{% endif %}">
-                <table>
-                    {% for field in g.recomended["fields"] %}
-                    <tr>
-                        <td>{{ field["name"] }}</td>
-                        <td>
-                            <input type="text" name="{{ field['code'] }}"{% if g.edit_window %} value="{{ g.getattr(g.element, field['code']) }}"{% endif %}>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-                {% if g.edit_window %}
-                <button form="create-window" formaction="/directory/{{ g.category }}/{{ g.element.id }}/">Сохранить</button>
-                {% else %}
-                <button form="create-window" formmethod="POST" formaction="/directory/{{ g.category }}/">Сохранить</button>
-                {% endif %}
-            </form>
+            <p><a href="./create.html">Создать</a></p>
             {% endif %}
             {% if g.viewbar %}
-            <table>
-                {% for field in g.fields %}
-                <tr>
-                    <td style="border: 1px solid rgba(59,59,121,1);" >{{ g.naming[field] }}</td><td style="border: 1px solid rgba(59,59,121,1);">{{ g.getattr(g.element, field, "") }}</td>
-                </tr>
-                {% endfor %}
+            <p><a href="./">Назад</a></p>
+            <p><a id = "toolbar-edit" href="#">Изменить</a></p>
+            <form id="edit-form" class="edit-form" method="POST" action="/directory/{{ g.category }}/{{ g.getattr(g.element, 'id')}}.html">
+                <table class="toolbar-info-table">
+                    <tbody>
+                        {% for field in g.view_fields %}
+                        <tr data-field="{{ field }}">
+                            <td>{{ g.all_fields_comments[field] }}</td>
+                            <td class="toolbar-edit-fields" data-field="{{ field }}" data-autofield="{% if field in g.auto_fields %}True{% else %}False{% endif %}" data-required="{% if field in g.required_fields %}True{% else %}False{% endif %}">{{ g.getattr(g.element, field, "") }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+            <script>
+                let edit_button = document.querySelector("#toolbar-edit");
+                edit_button.onclick = () => {
+                    document.querySelectorAll("td.toolbar-edit-fields").forEach(
+                        (elem)=> {
+                            let new_inp = document.createElement("input");
+                            if (elem.dataset["autofield"] == "True")
+                            {
+                                return ;
+                            }
+                            new_inp.value = elem.innerHTML;
+                            new_inp.name = elem.dataset["field"];
+                            new_inp.type = "text";
+                            if (elem.dataset["required"] == "True")
+                            {
+                                new_inp.required = true;
+                            }
+                            elem.innerHTML = "";
+                            elem.appendChild(new_inp);
+                        }
+                    );
+                    edit_button.remove();
+                    let save_button = document.createElement("button");
+                    save_button.form = "edit-form";
+                    save_button.innerHTML = "Сохранить";
+                    save_button.type = "submit";
+                    document.querySelector("form#edit-form").appendChild(save_button);
+                }
+            </script>
+            {% endif %}
+            {% if g.createbar %}
+            <p><a href="./">Назад</a></p>
+            <table class="toolbar-info-table">
+                <tbody>
+                    <form id="new-element">
+                        {% for field in g.edit_fields %}
+                        <tr data-field="{{ field }}">
+                            <td>{{ g.all_fields_comments[field] }}</td><td><input type="text" name="{{ field }}" value="" placeholder="{{ g.all_fields_comments[field] }}"{% if field in g.required_fields %} required{% endif %}></td>
+                        </tr>
+                        {% endfor %}
+                    </form>
+                    <tr>
+                        <td>
+                            <button form="new-element" type="submit" formmethod="POST" formaction="/directory/{{ g.category }}/create.html">Сохранить</button>
+                        </td>
+                        <td>
+                            <button form="new-element" type="reset">Сбросить</button>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
             {% endif %}
         </div>
